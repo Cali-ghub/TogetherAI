@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TogetherAI · Pip</title>
+    <link rel="icon" type="image/png" href="/assets/pip-logo.png" />
+    <link rel="stylesheet" href="/assets/app.css?v=0.1.0" />
+  </head>
+  <body>
+    <main id="app" class="shell" aria-live="polite">
+      <section id="loginView" class="login-view" aria-labelledby="login-title">
+        <img class="login-mark" src="/assets/pip-logo.png" alt="" />
+        <p class="eyebrow">A shared place</p>
+        <h1 id="login-title">TogetherAI</h1>
+        <p class="login-copy">A calm corner for ideas you’re building side by side, with Pip nearby.</p>
+        <form id="loginForm" class="login-form">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" autocomplete="username" maxlength="64" required />
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+          <button type="submit">Enter TogetherAI <span aria-hidden="true">→</span></button>
+          <p id="loginError" class="form-error" hidden></p>
+        </form>
+        <p class="privacy-note">Shared rooms are visible to both participants. Other participants cannot open your private room, but Pip’s persistent profile memory is shared. Avoid sensitive details in private rooms until memory isolation is enforced.</p>
+      </section>
+
+      <section id="roomView" class="room-view" hidden>
+        <aside class="sidebar" aria-label="Navigation and rooms">
+          <div class="brand"><img class="brand-mark" src="/assets/pip-logo.png" alt="" /><span><strong>TogetherAI</strong><small>with Pip</small></span></div>
+          <nav class="sidebar-tools" aria-label="Tools">
+            <button id="searchMessagesButton" class="sidebar-tool" type="button"><span class="sidebar-tool-icon" aria-hidden="true">⌕</span>Search</button>
+            <button id="browseGalleryButton" class="sidebar-tool" type="button"><span class="sidebar-tool-icon" aria-hidden="true">▦</span>Gallery</button>
+          </nav>
+          <div class="room-label-row"><div class="room-label">Shared spaces</div><button id="newRoomButton" class="new-room-button" type="button">+ New</button></div>
+          <nav id="roomList" class="room-list" aria-label="Shared rooms"></nav>
+          <div class="room-label-row"><div class="room-label">Private to me</div></div>
+          <nav id="privateRoomList" class="room-list" aria-label="Private rooms"></nav>
+          <div class="sidebar-footer">
+            <span id="memberName"></span>
+            <button id="logoutButton" class="quiet-button" type="button">Sign out</button>
+          </div>
+        </aside>
+
+        <section class="conversation" aria-label="Conversation">
+          <header class="conversation-header">
+            <div>
+              <p id="roomVisibility" class="eyebrow">Shared space</p>
+              <h1 id="roomTitle">Shared conversation</h1>
+            </div>
+            <button id="manageRoomButton" type="button" disabled>Manage</button>
+          </header>
+          <div id="emptyState" class="empty-state">
+            <p id="emptyEyebrow" class="eyebrow">Begin anywhere</p>
+            <h2 id="emptyTitle">What are you making space for?</h2>
+            <p id="emptyCopy">Share a thought, an image, a sketch—then work it into something useful together.</p>
+          </div>
+          <ol id="messages" class="messages" aria-label="Messages"></ol>
+          <form id="composer" class="composer">
+            <label class="sr-only" for="messageInput">Message</label>
+            <div id="imagePreview" class="image-preview" hidden>
+              <div id="imageThumbnails" class="image-thumbnails"></div>
+            </div>
+            <textarea id="messageInput" rows="2" maxlength="8000" placeholder="Add to the conversation…"></textarea>
+            <div class="composer-actions">
+              <div class="image-actions">
+                <label class="attach-button" for="imageInput"><span aria-hidden="true">📎</span> Add images<input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden /></label>
+              </div>
+              <span id="composerStatus" class="composer-status">Shared with participants</span>
+              <button id="sendButton" type="submit">Send <span aria-hidden="true">↗</span></button>
+            </div>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="newRoomDialog" class="room-dialog" aria-labelledby="new-room-title">
+      <form id="newRoomForm" method="dialog">
+        <p class="eyebrow">New conversation</p>
+        <h2 id="new-room-title">Start something new</h2>
+        <label for="newRoomTitle">Conversation name</label>
+        <input id="newRoomTitle" name="title" maxlength="120" placeholder="e.g., Kitchen ideas" required />
+        <fieldset class="visibility-fieldset">
+          <legend>Who can see it?</legend>
+          <label><input type="radio" name="visibility" value="shared" checked /> Shared with participants</label>
+          <label><input type="radio" name="visibility" value="private" /> Private to me</label>
+        </fieldset>
+        <p id="newRoomError" class="form-error" hidden></p>
+        <div class="dialog-actions">
+          <button id="cancelNewRoom" class="quiet-button" type="button">Cancel</button>
+          <button type="submit">Create conversation</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="manageRoomDialog" class="room-dialog" aria-labelledby="manage-room-title">
+      <form id="manageRoomForm" method="dialog">
+        <p class="eyebrow">Manage conversation</p>
+        <h2 id="manage-room-title">Rename or archive</h2>
+        <label for="renameRoomTitle">Conversation name</label>
+        <input id="renameRoomTitle" maxlength="120" required />
+        <p id="manageRoomError" class="form-error" hidden></p>
+        <div class="dialog-actions">
+          <button id="archiveRoomButton" type="button" class="danger-button">Archive</button>
+          <span class="spacer"></span>
+          <button id="cancelManageRoom" class="quiet-button" type="button">Cancel</button>
+          <button type="submit">Save name</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="galleryDialog" class="gallery-dialog" aria-labelledby="gallery-title">
+      <section class="gallery-panel">
+        <header class="gallery-header">
+          <div><p class="eyebrow">Your image library</p><h2 id="gallery-title">Gallery</h2></div>
+          <div class="gallery-tools">
+            <button id="toggleRemovedButton" class="gallery-view-toggle" type="button" aria-pressed="false">Show removed</button>
+            <button id="closeGalleryButton" class="quiet-button" type="button">Done</button>
+          </div>
+        </header>
+        <p id="galleryNote" class="gallery-note">Photos and Pip’s creations from rooms you can access. Removing one hides it from every member’s Gallery but keeps it visible in existing messages; restore it with Show removed.</p>
+        <div id="galleryGrid" class="gallery-grid" aria-label="Images"></div>
+        <p id="galleryStatus" class="gallery-status" role="status" aria-live="polite"></p>
+      </section>
+    </dialog>
+
+    <dialog id="searchDialog" class="search-dialog" aria-labelledby="search-title">
+      <section class="search-panel">
+        <header class="gallery-header">
+          <div><p class="eyebrow">Find a moment</p><h2 id="search-title">Search conversations</h2></div>
+          <button id="closeSearchButton" class="quiet-button" type="button">Done</button>
+        </header>
+        <form id="messageSearchForm" class="search-form" role="search">
+          <label class="sr-only" for="searchQuery">Search message text</label>
+          <input id="searchQuery" type="search" minlength="2" maxlength="120" placeholder="Search messages…" required />
+          <button type="submit">Search</button>
+        </form>
+        <p id="searchStatus" class="gallery-status" role="status" aria-live="polite">Search messages across the rooms you can access.</p>
+        <div id="searchResults" class="search-results" aria-label="Search results"></div>
+      </section>
+    </dialog>
+
+    <script src="/assets/app.js?v=0.1.0" defer></script>
+  </body>
+</html>

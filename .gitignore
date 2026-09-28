@@ -1,0 +1,51 @@
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+*.local
+
+# Runtime state, user content, and Hermes profile data
+.runtime/
+uploads/
+.engine-home/
+.engine-state/
+.hermes/
+auth.json
+token.json
+credentials.json
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.log
+
+# Local backups and pre-release snapshots
+.backups/
+*.bak*
+*.before-*
+
+# Deployment secrets / certificates
+certs/
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Python build and cache artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

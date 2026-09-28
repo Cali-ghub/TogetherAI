@@ -1,0 +1,28 @@
+# Example systemd unit. Review every path and identity before installation.
+# Bind Uvicorn to loopback and put a TLS-terminating reverse proxy in front.
+[Unit]
+Description=TogetherAI shared chat
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=REPLACE_WITH_SERVICE_USER
+Group=REPLACE_WITH_SERVICE_GROUP
+WorkingDirectory=/opt/togetherai
+Environment=TOGETHER_ENV_FILE=/etc/togetherai/env
+Environment=TOGETHER_PYTHON=/opt/togetherai/.venv/bin/python
+Environment=TOGETHER_HOST=127.0.0.1
+Environment=TOGETHER_PORT=8790
+ExecStart=/opt/togetherai/scripts/run-service.sh
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/togetherai
+
+[Install]
+WantedBy=multi-user.target
